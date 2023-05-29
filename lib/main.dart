@@ -23,13 +23,13 @@ class MyApp extends StatelessWidget {
         title: "Exchange",
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          appBar: AppBar(title: Center(child: Text("Curency", style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w700, fontStyle: FontStyle.italic)), ),
+          appBar: AppBar(title: Center(child: Text("Sudoku Currency", style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.w700, fontStyle: FontStyle.italic)), ),
             backgroundColor: Colors.blueAccent,
-            toolbarHeight: 65.0,),
+            toolbarHeight: 85.0,),
           body: Container(
             decoration: BoxDecoration(image: DecorationImage(image: AssetImage("Assets/background.jpg", ),fit: BoxFit.fill,)),
             child: Column(children: [
-              SizedBox(height: spaceBetween),
+              SizedBox(height: 35),
               Row(
                 children: [
                   bank(0),
@@ -47,11 +47,19 @@ class MyApp extends StatelessWidget {
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
+              SizedBox(height: 75.0),
 
+              Row(
+                children: [
+                  bank(4),
+                  SizedBox(width: 30.0),
+                  bank(5)
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
             ],
             ),
           ),
-
         ),
         darkTheme: ThemeData.dark()
     );
@@ -60,7 +68,7 @@ class MyApp extends StatelessWidget {
 
 class bank extends StatelessWidget{
   var bra;
-  var banks = ["Ziraat Bankası", "Merkez Bankası", "İş Bankası", "Halk Bankası"];
+  var banks = ["Ziraat Bankası", "Merkez Bankası", "İş Bankası", "Halk Bankası", "Garanti Bankası", "Yapı Kredi Bankası"];
 
   bank(int bra){
     this.bra = bra;
@@ -86,12 +94,16 @@ class bank extends StatelessWidget{
           borderRadius: BorderRadius.circular(15.0),
           color: bra == 0 || bra == 1?
                   Colors.red:
-                      Colors.blue,
+                      bra == 2 || bra ==3 || bra == 5?
+                      Colors.blue:
+                          Colors.greenAccent,
           boxShadow: [
             BoxShadow(
               color: bra == 0 || bra == 1?
-                          Colors.red:
-                          Colors.blue,
+              Colors.red:
+              bra == 2 || bra ==3 || bra == 5?
+              Colors.blue:
+              Colors.greenAccent,
               spreadRadius: 2,
               blurRadius: 7,
               offset: Offset(0, 3), // changes position of shadow
@@ -113,7 +125,7 @@ class NextPage extends StatefulWidget{
 
 class NextPageState extends State<NextPage> {
   var width = 125.0;
-  var height = 50.0;
+  var height = 75.0;
 
   var showUsdA = "none";
   var showUsdS = "none";
@@ -172,8 +184,6 @@ class NextPageState extends State<NextPage> {
       final res = await http.post(url);
       final body = res.body;
 
-
-
       final doc = parser.parse(body);
       final usdA = doc.getElementsByClassName("table")[7].children[0].children[1].children[0].children[2].text;
       final usdS = doc.getElementsByClassName("table")[7].children[0].children[1].children[0].children[3].text;
@@ -196,18 +206,63 @@ class NextPageState extends State<NextPage> {
       final res = await http.post(url);
       final body = res.body;
 
-
-
       final doc = parser.parse(body);
       final usdA = doc.getElementsByClassName("text-primary text-right text-title    ")[0].text.replaceAll(' ', "").replaceAll("\n", "");
       final usdS = doc.getElementsByClassName("text-right")[6].children[0].innerHtml;
       final eurA = doc.getElementsByClassName("text-primary text-right text-title    ")[4].text.replaceAll(' ', "").replaceAll("\n", "");
       final eurS =  doc.getElementsByClassName("text-primary text-right text-title    ")[5].text.replaceAll(' ', "").replaceAll("\n", "");
+      final pndA = doc.getElementsByClassName("text-primary text-right text-title    ")[6].text.replaceAll(' ', "").replaceAll("\n", "");
+      final pndS = doc.getElementsByClassName("text-primary text-right text-title    ")[7].text.replaceAll(' ', "").replaceAll("\n", "");
       setState(() {
         showUsdA = usdA;
         showUsdS = usdS;
         showEurA = eurA;
         showEurS = eurS;
+
+      });
+    }
+    else if(snapBank == "Garanti Bankası"){
+      var url = Uri.parse("https://canlidoviz.com/doviz-kurlari/garanti-bankasi");
+      final res = await http.post(url);
+      final body = res.body;
+
+      final doc = parser.parse(body);
+
+      final usdA = doc.getElementsByClassName("text-primary text-right text-title    ")[0].text.replaceAll(' ', "").replaceAll("\n", "");
+      final usdS = doc.getElementsByClassName("text-right")[6].children[0].innerHtml;
+      final eurA = doc.getElementsByClassName("text-primary text-right text-title    ")[4].text.replaceAll(' ', "").replaceAll("\n", "");
+      final eurS =  doc.getElementsByClassName("text-primary text-right text-title    ")[6].text.replaceAll(' ', "").replaceAll("\n", "");
+      final pndA = doc.getElementsByClassName("text-primary text-right text-title    ")[7].text.replaceAll(' ', "").replaceAll("\n", "");
+      final pndS = doc.getElementsByClassName("text-primary text-right text-title    ")[10].text.replaceAll(' ', "").replaceAll("\n", "");
+      setState(() {
+        showUsdA = usdA;
+        showUsdS = usdS;
+        showEurA = eurA;
+        showEurS = eurS;
+        showPndA = pndA;
+        showPndS = pndS;
+      });
+    }
+    else if(snapBank == "Yapı Kredi Bankası"){
+      var url = Uri.parse("https://www.yapikredi.com.tr/yatirimci-kosesi/doviz-bilgileri");
+      final res = await http.post(url);
+      final body = res.body;
+
+      final doc = parser.parse(body);
+
+      final usdA = doc.getElementsByClassName("table-radius")[0].children[0].children[1].children[0].children[2].innerHtml;
+      final usdS = doc.getElementsByClassName("table-radius")[0].children[0].children[1].children[0].children[3].innerHtml;
+      final eurA = doc.getElementsByClassName("table-radius")[0].children[0].children[1].children[1].children[2].innerHtml;
+      final eurS = doc.getElementsByClassName("table-radius")[0].children[0].children[1].children[1].children[3].innerHtml;
+      final pndA = doc.getElementsByClassName("table-radius")[0].children[0].children[1].children[3].children[2].innerHtml;
+      final pndS = doc.getElementsByClassName("table-radius")[0].children[0].children[1].children[3].children[3].innerHtml;
+      setState(() {
+        showUsdA = usdA;
+        showUsdS = usdS;
+        showEurA = eurA;
+        showEurS = eurS;
+        showPndA = pndA;
+        showPndS = pndS;
       });
     }
   }
@@ -237,25 +292,31 @@ class NextPageState extends State<NextPage> {
                     height: height,
                     width: width,
                     decoration: BoxDecoration(
-                      border: Border.all(style: BorderStyle.solid, color: Colors.purpleAccent),
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                      ),
                     ),
-                    child: Center(child: Text("Birim", style: TextStyle(fontSize: 24)),),
+                    child: Center(child: Text("Birim", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),),
                   ),
                   Container(
                     height: height,
                     width: width,
                     decoration: BoxDecoration(
-                      border: Border.all(style: BorderStyle.solid, color: Colors.purpleAccent),
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
                     ),
-                    child: Center(child: Text("Alış", style: TextStyle(fontSize: 24)),),
+                    child: Center(child: Text("Alış", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),),
                   ),
                   Container(
                     height: height,
                     width: width,
                     decoration: BoxDecoration(
-                      border: Border.all(style: BorderStyle.solid, color: Colors.purpleAccent),
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(15),
+                      ),
                     ),
-                    child: Center(child: Text("Satış", style: TextStyle(fontSize: 24)),),
+                    child: Center(child: Text("Satış", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),),
                   ),
                 ],
               ),
@@ -264,16 +325,25 @@ class NextPageState extends State<NextPage> {
                   Container(
                     height: height,
                     width: width,
-                    child: Center(child: Text("Dolar", style: TextStyle(fontSize: 24),),),
+                    decoration: BoxDecoration(
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                    ),
+                    child: Center(child: Text("Dolar", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                   ),
                   Container(
                     height: height,
                     width: width,
-                    child: Center(child: Text(showUsdA, style: TextStyle(fontSize: 24),),),),
+                    decoration: BoxDecoration(
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                    ),
+                    child: Center(child: Text(showUsdA, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),),
                   Container(
                     height: height,
                     width: width,
-                    child: Center(child: Text(showUsdS, style: TextStyle(fontSize: 24),),),
+                    decoration: BoxDecoration(
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                    ),
+                    child: Center(child: Text(showUsdS, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                   )
                 ],
               ),
@@ -282,16 +352,25 @@ class NextPageState extends State<NextPage> {
                   Container(
                     height: height,
                     width: width,
-                    child: Center(child: Text("Euro", style: TextStyle(fontSize: 24),),),
+                    decoration: BoxDecoration(
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                    ),
+                    child: Center(child: Text("Euro", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                   ),
                   Container(
                     height: height,
                     width: width,
-                    child: Center(child: Text(showEurA, style: TextStyle(fontSize: 24),),),),
+                    decoration: BoxDecoration(
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                    ),
+                    child: Center(child: Text(showEurA, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),),
                   Container(
                     height: height,
                     width: width,
-                    child: Center(child: Text(showEurS, style: TextStyle(fontSize: 24),),),
+                    decoration: BoxDecoration(
+                      border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                    ),
+                    child: Center(child: Text(showEurS, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                   )
                 ],
               ),if(snapBank != "Halk Bankası")
@@ -300,16 +379,31 @@ class NextPageState extends State<NextPage> {
                     Container(
                       height: height,
                       width: width,
-                      child: Center(child: Text("Sterlin", style: TextStyle(fontSize: 24),),),
+                      decoration: BoxDecoration(
+                        border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(15),
+                        ),
+                      ),
+                      child: Center(child: Text("Sterlin", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                     ),
                     Container(
                       height: height,
                       width: width,
-                      child: Center(child: Text(showPndA, style: TextStyle(fontSize: 24),),),),
+                      decoration: BoxDecoration(
+                        border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                      ),
+                      child: Center(child: Text(showPndA, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),),
                     Container(
                       height: height,
                       width: width,
-                      child: Center(child: Text(showPndS, style: TextStyle(fontSize: 24),),),
+                      decoration: BoxDecoration(
+                        border: Border.all(style: BorderStyle.solid, color: Colors.blueAccent, width: 5),
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(15),
+                        ),
+                      ),
+                      child: Center(child: Text(showPndS, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                     ),
                   ],
                 ),
