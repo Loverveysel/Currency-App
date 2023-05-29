@@ -61,6 +61,8 @@ flutter:
     - Assets/İş Bankası.png
     - Assets/Merkez Bankası.png
     - Assets/Ziraat Bankası.png
+    - Assets/Garanti Bankası.png
+    - Assets/Yapı Kredi Bankası.png
     - Assets/background.jpg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
