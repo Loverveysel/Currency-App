@@ -17,8 +17,8 @@ var height = 75.0;
 List minimmum(var geekList){
 
 
-  double largestGeekValue = double.parse(geekList[0]);
-  double smallestGeekValue = double.parse(geekList[0]);
+  double largestGeekValue = double.parse(geekList[0].toString().replaceAll(",", "."));
+  double smallestGeekValue = double.parse(geekList[0].toString().replaceAll(",", "."));
 
   int largestIndex = 0;
   int smallestIndex = 0;
@@ -62,7 +62,8 @@ class MyApp extends StatelessWidget {
                 Builder(
                   builder: (context) => Center(
                     child: ElevatedButton(
-                      child: Text("Filter"),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      child: Text("Filtre"),
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -173,12 +174,12 @@ class NextPage extends StatefulWidget{
 class NextPageState extends State<NextPage> {
 
 
-  var showUsdA = "";
-  var showUsdS = "";
-  var showEurA = "";
-  var showEurS = "";
-  var showPndA = "";
-  var showPndS = "";
+  var showUsdA = "loading...";
+  var showUsdS = "loading...";
+  var showEurA = "loading...";
+  var showEurS = "loading...";
+  var showPndA = "loading...";
+  var showPndS = "loading...";
 
   Future<void> getData() async{
     if(snapBank == "Merkez Bankası"){
@@ -472,40 +473,29 @@ class filterPage extends StatefulWidget{
 
 class filterPageState extends State<filterPage>{
 
-  var minUsdA = "";
-  var minEurA = "";
-  var minPndA = "";
+  var minUsdA = "loading...";
+  var minEurA = "loading...";
+  var minPndA = "loading...";
 
-  var minUsdS = "";
-  var minEurS = "";
-  var minPndS = "";
+  var minUsdS = "loading...";
+  var minEurS = "loading...";
+  var minPndS = "loading...";
 
-  var maxUsdA = "";
-  var maxEurA = "";
-  var maxPndA = "";
+  var maxUsdA = "loading...";
+  var maxEurA = "loading...";
+  var maxPndA = "loading...";
 
-  var maxUsdS = "";
-  var maxEurS = "";
-  var maxPndS = "";
+  var maxUsdS = "loading...";
+  var maxEurS = "loading...";
+  var maxPndS = "loading...";
 
-  final bankList = ["TCMB", "İş Bankası", "Ziraat Bankası", "Garanti Bankası", "Yapı Kredi Bankası"];
+  final bankList = ["İş Bankası", "Ziraat Bankası", "Garanti Bankası", "Yapı Kredi Bankası"];
 
   Future<void> getData() async{
-    var url = Uri.parse("https://www.tcmb.gov.tr/kurlar/today.xml");
 
-    var res = await http.get(url);
+    var url = Uri.parse("https://www.isbank.com.tr/doviz-kurlari");
+    var res = await http.post(url);
     var body = res.body;
-    var doc = XmlDocument.parse(body);
-    final usdA1 =  doc.findAllElements("ForexBuying").first.text;
-    final usdS1 = doc.findAllElements("ForexSelling").first.text;
-    final eurA1 = doc.findAllElements("ForexBuying").elementAt(3).text;
-    final eurS1 = doc.findAllElements("ForexSelling").elementAt(3).text;
-    final pndA1 = doc.findAllElements("ForexBuying").elementAt(4).text;
-    final pndS1 = doc.findAllElements("ForexSelling").elementAt(4).text;
-
-    url = Uri.parse("https://www.isbank.com.tr/doviz-kurlari");
-    res = await http.post(url);
-    body = res.body;
 
     var doc2 = parser.parse(body);
     final usdA2 = doc2.getElementsByClassName("dk_L0")[0].children[1].text.toString().replaceAll(" ", "").replaceAll("\n","");
@@ -523,7 +513,7 @@ class filterPageState extends State<filterPage>{
     final usdA3 = doc2.getElementsByClassName("table")[7].children[0].children[1].children[0].children[2].text;
     final usdS3 = doc2.getElementsByClassName("table")[7].children[0].children[1].children[0].children[3].text;
     final eurA3 = doc2.getElementsByClassName("table")[7].children[0].children[1].children[1].children[2].text;
-    final eurS3= doc2.getElementsByClassName("table")[7].children[0].children[1].children[1].children[3].text;
+    final eurS3 = doc2.getElementsByClassName("table")[7].children[0].children[1].children[1].children[3].text;
     final pndA3 = doc2.getElementsByClassName("table")[7].children[0].children[1].children[2].children[2].text;
     final pndS3 = doc2.getElementsByClassName("table")[7].children[0].children[1].children[2].children[3].text;
 
@@ -535,7 +525,7 @@ class filterPageState extends State<filterPage>{
 
     final usdA4 = doc2.getElementsByClassName("text-primary text-right text-title    ")[0].text.replaceAll(' ', "").replaceAll("\n", "");
     final usdS4 = doc2.getElementsByClassName("text-right")[6].children[0].innerHtml;
-    final eurA4= doc2.getElementsByClassName("text-primary text-right text-title    ")[4].text.replaceAll(' ', "").replaceAll("\n", "");
+    final eurA4 = doc2.getElementsByClassName("text-primary text-right text-title    ")[4].text.replaceAll(' ', "").replaceAll("\n", "");
     final eurS4 = doc2.getElementsByClassName("text-primary text-right text-title    ")[6].text.replaceAll(' ', "").replaceAll("\n", "");
     final pndA4= doc2.getElementsByClassName("text-primary text-right text-title    ")[7].text.replaceAll(' ', "").replaceAll("\n", "");
     final pndS4 = doc2.getElementsByClassName("text-primary text-right text-title    ")[10].text.replaceAll(' ', "").replaceAll("\n", "");
@@ -553,12 +543,12 @@ class filterPageState extends State<filterPage>{
     final pndA5 = doc2.getElementsByClassName("table-radius")[0].children[0].children[1].children[3].children[2].innerHtml;
     final pndS5 = doc2.getElementsByClassName("table-radius")[0].children[0].children[1].children[3].children[3].innerHtml;
 
-    final usdA = [usdA1, usdA2, usdA3, usdA4, usdA5];
-    final usdS = [usdS1, usdS2, usdS3, usdS4, usdS5];
-    final eurA = [eurA1, eurA2, eurA3, eurA4, eurA5];
-    final eurS = [eurS1, eurS2, eurS3, eurS4, eurS5];
-    final pndA = [pndA1, pndA2, pndA3, pndA4, pndA5];
-    final pndS = [pndS1, pndS2, pndS3, pndS4, pndS5];
+    final usdA = [usdA2, usdA3, usdA4, usdA5];
+    final usdS = [usdS2, usdS3, usdS4, usdS5];
+    final eurA = [eurA2, eurA3, eurA4, eurA5];
+    final eurS = [eurS2, eurS3, eurS4, eurS5];
+    final pndA = [pndA2, pndA3, pndA4, pndA5];
+    final pndS = [pndS2, pndS3, pndS4, pndS5];
 
     if (this.mounted) {
       setState(() {
@@ -590,7 +580,7 @@ class filterPageState extends State<filterPage>{
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 60.0,
-        title: Text("Filter Page", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.white)),
+        title: Text("Filtre", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
       ),
